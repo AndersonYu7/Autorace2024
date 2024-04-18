@@ -25,7 +25,7 @@ class ControlLane(Node):
         self.kd = 0.06
 
         self.avoidance_mode = False
-        self.avoidance_max_distance = 0.45
+        self.avoidance_max_distance = 0.48
         self.lidar_error = 0
 
         self.stop = False
@@ -76,16 +76,16 @@ class ControlLane(Node):
             # 距離小於max_distance才加入參考
             if distance<self.avoidance_max_distance:
                 # print('hi i am in')
-                if angle_degrees>-178 and angle_degrees<-110:
+                if angle_degrees>-178 and angle_degrees<-100:
                     # print(angle_degrees)
-                    lidar_error += (0.655*(self.avoidance_max_distance-distance))+(0.01*(-110-angle_degrees)) #0.03
+                    lidar_error += (0.66*(self.avoidance_max_distance-distance))+(0.01*(-100-angle_degrees)) #0.03
             if distance<0.35:
                 if angle_degrees<180 and angle_degrees>110:
                     # print(angle_degrees)
                     lidar_error -= (0.5*(0.3-distance))+(0.01*(angle_degrees-110))
 
         if int(lidar_error) > 0:
-            self.lidar_error = int(lidar_error*0.825)
+            self.lidar_error = int(lidar_error*0.75)
         else:
             self.lidar_error = int(lidar_error*0.635)
 

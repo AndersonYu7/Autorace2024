@@ -118,7 +118,7 @@ class ObjectDetection(Node):
         t2 = time_synchronized()
 
         # Apply NMS
-        pred = non_max_suppression(pred, self.conf_thres, self.iou_thres)
+        pred = non_max_suppression(pred, self.conf_thres, seros2 launch detect_lane detect_lane_launch.py calibration:=Truelf.iou_thres)
         t3 = time_synchronized()
 
         # Process detections   
@@ -172,7 +172,7 @@ class ObjectDetection(Node):
                 for *xyxy, conf, cls in reversed(det):
                     label = f'{self.names[int(cls)]} {conf:.2f}'
 
-                    if conf > 0.5: # Limit confidence threshold to 50% for all classes
+                    if conf > 0.75: # Limit confidence threshold to 50% for all classes
                         # print(int(cls))
                         if choice_highest_cls and int(cls) != int(found_cls[0]):
                             # print(int(cls), int(found_cls[0]))

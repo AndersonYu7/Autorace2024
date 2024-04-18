@@ -61,6 +61,11 @@ class node(Node):
         self.receive_error = False
         self.ready_to_out_ts = False
         self.ready_to_go_row = False
+        self.receive_stop = False
+
+        self.cnt = 0
+
+        self.row_stop = False
 
         self.xmin = 0
         self.ymin = 0
@@ -105,6 +110,7 @@ class node(Node):
         self.traffic_light = msg.data
 
     def signs_callback(self, msg):
+        
         if msg.data == 'Ts':
             self.get_logger().info('Received: Intersection sign')
 
@@ -139,20 +145,21 @@ class node(Node):
             self.get_logger().info('Received: PARKING sign')
             self.mode = Mode.PARKING
 
+        elif msg.data == 'stop':
+            self.get_logger().info('Received: STOPPPP sign')
+            self.receive_stop = True
+        
         elif msg.data == 'row':
             self.get_logger().info('Received: STOPBAR sign')
-            print(self.xmin)
-            print(self.ymin)
-            print(self.xmax)
-            print(self.ymax)
+            self.row_stop = True
 
-            if self.xmax-self.xmin > 240:   #框框夠大時
+            if self.xmax-self.xmin > 170:   #框框夠大時
             # if (self.xmax+self.xmin)/2 >=300 and (self.xmax+self.xmin)/2 <=400 and self.xmax-self.xmin > 240:
                 # pub stop car
                 stop_msg = Bool()
                 stop_msg.data = True
                 self.pub_stop.publish(stop_msg)
-                self.ready_to_go_row = True
+                # self.ready_to_go_row = True
 
             else:
                 # pub go car
@@ -171,7 +178,16 @@ class node(Node):
             self.get_logger().info('Received: NONE sign')
             self.mode = self.mode
             self.receive_error = False
-            self.ready_to_go_row = False
+            self.row_stop = False
+
+        if self.receive_stop == True and  self.row_stop == False:
+            # pub go car
+            stop_msg = Bool()
+            stop_msg.data = False
+            self.pub_stop.publish(stop_msg) 
+
+            self.receive_stop == True = False 
+            
 
         # out of Ts
         if self.receive_error == False and self.mode.value == Mode.INTERSECTION.value and self.ready_to_out_ts == True:
@@ -191,11 +207,12 @@ class node(Node):
             # initial variable
             self.Turn = GO_LEFT_RIGHT.STRIGHT
 
-            if self.ready_to_go_row == True:
-                # pub go car
-                stop_msg = Bool()
-                stop_msg.data = False
-                self.pub_stop.publish(stop_msg)
+            # if self.ready_to_go_row == True:
+            #     self.ready_to_go_row = False
+            #     # pub go car
+            #     stop_msg = Bool()
+            #     stop_msg.data = False
+            #     self.pub_stop.publish(stop_msg)
 
             # 紅綠燈關卡
             if self.keep_going == False:
@@ -241,7 +258,7 @@ class node(Node):
             self.publisher_which_line.publish(msg)
             
             ##==========================way1=================
-            #publish to go_single_line -> 雙白線
+            # publish to go_single_line -> 雙白線
             # msg = Int64()
             # msg.data = 2
             # self.publisher_which_line.publish(msg)
@@ -258,20 +275,20 @@ class node(Node):
             # self.mode = Mode.LANE
             #================================================
 
-            ##======================way2=====================
+            # ##======================way2=====================
             avoidance_msg = Bool()
             avoidance_msg.data = True
             self.pub_avoidance.publish(avoidance_msg)
-            ##==============================================
+            # ##==============================================
 
         elif self.mode.value == Mode.PARKING.value:
             self.get_logger().info('Mode: PARKING')
 
-            ##======================way2:finish avoidance=====================
+            # ##======================way2:finish avoidance=====================
             avoidance_msg = Bool()
             avoidance_msg.data = False
             self.pub_avoidance.publish(avoidance_msg)
-            ##==============================================
+            # ##==============================================
 
             msg = Int64()
             stop_msg = Bool()

@@ -40,13 +40,13 @@ class TurnLeftNode(Node):
 
         elif self.parling_choice.value == GO_LEFT_RIGHT.RIGHT.value:
             self.stop_turning(1.0)
-            self.go_forward(0.5)
+            # self.go_forward(0.5)
             self.turn_right(0.6)
-            self.go_forward(1.4)
+            self.go_forward(1.5)
             self.stop_turning(1.1)
             self.go_backward(1.4)
             self.turn_right(0.6)
-            self.go_forward(1.1)
+            self.go_forward(1.0)
 
 
             

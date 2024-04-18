@@ -47,13 +47,13 @@ class LaserScanSubscriber(Node):
 
                 self.get_logger().info('Start Avoidance')
                 self.move_and_sleep(0.0, 0.0, 1.2)   # linear_speed, angular_speed, duration
-                self.move_and_sleep(80.0, 6.5, 2.3)
-                self.move_and_sleep(80.0, 0.0, 1.5)
-                self.move_and_sleep(80.0, -5.5, 2.5)
-                self.move_and_sleep(80.0, 0.0, 1.2)
-                self.move_and_sleep(80.0, -6.0, 2.0)
-                self.move_and_sleep(80.0, 0.0, 2.3)
-                self.move_and_sleep(80.0, 6.0, 2.0)
+                self.move_and_sleep(0.1, 3.4, 0.6)
+                self.move_and_sleep(0.2, 0.0, 1.2)
+                self.move_and_sleep(0.1, -2.75, 0.7)
+                self.move_and_sleep(0.2, 0.0, 1.7)
+                self.move_and_sleep(0.1, -2.6, 0.5)
+                self.move_and_sleep(0.2, 0.0, 1.2)
+                self.move_and_sleep(0.1, 3.0, 0.6)
                 self.move_and_sleep(0.0, 0.0, 0.1)
 
                 pub_done_msg.data = True
