@@ -118,7 +118,7 @@ class ObjectDetection(Node):
         t2 = time_synchronized()
 
         # Apply NMS
-        pred = non_max_suppression(pred, self.conf_thres, seros2 launch detect_lane detect_lane_launch.py calibration:=Truelf.iou_thres)
+        pred = non_max_suppression(pred, self.conf_thres, self.iou_thres)
         t3 = time_synchronized()
 
         # Process detections   

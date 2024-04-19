@@ -1,6 +1,6 @@
 /detect_node:
   ros__parameters:
-    bottom_x: 598.0
+    bottom_x: 563.0
     bottom_y: 463.0
     hue_white_h: 181.0
     hue_white_l: 0.0
@@ -16,5 +16,5 @@
     saturation_white_l: 0.0
     saturation_yellow_h: 197.0
     saturation_yellow_l: 13.0
-    top_x: 473.0
-    top_y: 296.0
+    top_x: 483.0
+    top_y: 328.0

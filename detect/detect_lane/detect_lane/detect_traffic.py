@@ -145,7 +145,7 @@ class detect(Node):
     def hue_green_h_callback(self, msg):
         self.hue_green_h = int(msg.data)
 
-    def saturation_green_l_caldetect_nodelback(self, msg):
+    def saturation_green_l_callback(self, msg):
         self.saturation_green_l = int(msg.data)
 
     def saturation_green_h_callback(self, msg):

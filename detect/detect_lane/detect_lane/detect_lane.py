@@ -544,11 +544,11 @@ class detect(Node):
         
         self.is_center_x_exist = True
 
-        value = 230
-        value_r = 230
+        value = 240
+        value_r = 240
         if self.avoidance_mode == True:
             value = 295
-            value_r = 300
+            value_r = 305
             # index = 200
 
         if self.reliability_white_line > 50 and self.reliability_yellow_line > 50:   
@@ -651,7 +651,7 @@ class detect(Node):
 
         if self.reliability_yellow_line > 50:
             print('hi4')
-            centerx = np.add(self.left_fitx, 250) #320
+            centerx = np.add(self.left_fitx, 240) #320
             pts_center = np.array([np.transpose(np.vstack([centerx, ploty]))])
 
             cv2.polylines(color_warp_lines, np.int_([pts_center]), isClosed=False, color=(0, 255, 255), thickness=12)
@@ -711,7 +711,7 @@ class detect(Node):
 
         if self.reliability_white_line > 50:
             print('hi5')
-            centerx = np.subtract(self.right_fitx, 250) #320
+            centerx = np.subtract(self.right_fitx, 240) #320
             pts_center = np.array([np.transpose(np.vstack([centerx, ploty]))])
 
             cv2.polylines(color_warp_lines, np.int_([pts_center]), isClosed=False, color=(0, 255, 255), thickness=12)

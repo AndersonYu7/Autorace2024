@@ -62,6 +62,9 @@ class node(Node):
         self.ready_to_out_ts = False
         self.ready_to_go_row = False
         self.receive_stop = False
+        self.row_cnt = 0
+
+        self.intersection_going = False
 
         self.cnt = 0
 
@@ -119,15 +122,17 @@ class node(Node):
 
         elif msg.data == 'left':
             self.get_logger().info('Received: LEFT sign')
-
-            # go left flag
-            self.Turn = GO_LEFT_RIGHT.LEFT
+            
+            if self.intersection_going == False:
+                # go left flag
+                self.Turn = GO_LEFT_RIGHT.LEFT
 
         elif msg.data == 'right':
             self.get_logger().info('Received: RIGHT sign')
 
-            # go right flag
-            self.Turn = GO_LEFT_RIGHT.RIGHT
+            if self.intersection_going == False:
+                # go right flag
+                self.Turn = GO_LEFT_RIGHT.RIGHT
 
         elif msg.data == 'error':
             self.get_logger().info('Received: STOP sign')
@@ -135,6 +140,7 @@ class node(Node):
             self.now_time = datetime.datetime.now()
             self.receive_error = True
             self.ready_to_out_ts = True
+            self.intersection_going = True
 
         elif msg.data == 'dig':
             self.get_logger().info('Received: OBSTACLE sign %d' % int(self.mode.value))
@@ -145,27 +151,36 @@ class node(Node):
             self.get_logger().info('Received: PARKING sign')
             self.mode = Mode.PARKING
 
-        elif msg.data == 'stop':
-            self.get_logger().info('Received: STOPPPP sign')
-            self.receive_stop = True
-        
+            self.intersection_going = False
+
+        # elif msg.data == 'stop':
+        #     self.get_logger().info('Received: STOPPPP sign')
+            # if self.row_stop == True and self.stop_once == False:
+            #     self.receive_stop = False
+            # elif self.stop_once == True:
+            #     self.receive_stop = True
+            # self.receive_stop = True
         elif msg.data == 'row':
             self.get_logger().info('Received: STOPBAR sign')
             self.row_stop = True
 
-            if self.xmax-self.xmin > 170:   #框框夠大時
+            if self.xmax-self.xmin > 160:   #框框夠大時
             # if (self.xmax+self.xmin)/2 >=300 and (self.xmax+self.xmin)/2 <=400 and self.xmax-self.xmin > 240:
                 # pub stop car
                 stop_msg = Bool()
                 stop_msg.data = True
                 self.pub_stop.publish(stop_msg)
+                self.row_cnt = 0
+                self.get_logger().warning('0000000000000000')
                 # self.ready_to_go_row = True
-
             else:
-                # pub go car
-                stop_msg = Bool()
-                stop_msg.data = False
-                self.pub_stop.publish(stop_msg)
+                self.get_logger().warning('efawefawef: TUNNEL sign')
+                self.row_cnt = self.row_cnt+1 
+            # else:
+            #     # pub go car
+            #     stop_msg = Bool()
+            #     stop_msg.data = False
+            #     self.pub_stop.publish(stop_msg)
 
         elif msg.data == 'cave':
             self.get_logger().info('Received: TUNNEL sign')
@@ -174,28 +189,29 @@ class node(Node):
             stop_msg = Bool()
             stop_msg.data = True
             self.pub_stop.publish(stop_msg)
+
         else:
             self.get_logger().info('Received: NONE sign')
             self.mode = self.mode
             self.receive_error = False
-            self.row_stop = False
+            # self.row_stop = False
+            self.row_cnt = self.row_cnt+1 
 
-        if self.receive_stop == True and  self.row_stop == False:
-            # pub go car
+
+        if self.row_cnt >= 30 and self.row_stop == True:
             stop_msg = Bool()
             stop_msg.data = False
             self.pub_stop.publish(stop_msg) 
-
-            self.receive_stop == True = False 
+            self.row_stop = False
             
-
         # out of Ts
         if self.receive_error == False and self.mode.value == Mode.INTERSECTION.value and self.ready_to_out_ts == True:
             end_time = datetime.datetime.now()
+            self.intersection_going = True
 
             time_difference = end_time.timestamp() - self.now_time.timestamp()
 
-            if abs(time_difference) >= 3.5:
+            if abs(time_difference) >= 5.0:
                 self.mode = Mode.LANE
                 self.receive_error = False
                 self.ready_to_out_ts = False
